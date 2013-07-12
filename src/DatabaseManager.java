@@ -136,34 +136,74 @@ public class DatabaseManager {
 		}
 	}
 	
+	/**
+	 * Get movie table ID by movie title
+	 * @param title movie title
+	 * @return unique movie database ID
+	 */
 	public int getMovieID ( String title ) {
 		
 	}
 	
-	public int getActorID ( String lastname, String firstname ) {
+	/**
+	 * Get actor table ID by actor name
+	 * @param name actor's name as string array [last, first]
+	 * @return unique actor database ID
+	 */
+	public int getActorID ( String[] name ) {
 		
 	}	
 	
+	/**
+	 * Get role table ID by role name
+	 * @param role role title
+	 * @return unique role database ID
+	 */
 	public int getRoleID ( String role ) {
 		
 	}
 	
+	/**
+	 * Get movie name by movie table ID
+	 * @param id movie database ID
+	 * @return movie name string
+	 */
 	public String getMovieName ( int id ) {
 		
 	}
 	
+	/**
+	 * Get actor name by actor table ID
+	 * @param id actor database ID
+	 * @return actor name string array [last, first]
+	 */
 	public String[] getActorName ( int id ) {
 		
 	}
 	
+	/**
+	 * Get role name by role table ID
+	 * @param id role database ID
+	 * @return role name string
+	 */
 	public String getRoleName ( int id ) {
 		
 	}
 	
+	/**
+	 * Get movie ID associated with given role ID
+	 * @param id role database ID
+	 * @return movie ID
+	 */
 	public int getMovieID ( int role ) {
 		
 	}
 	
+	/**
+	 * Get actor ID associated with given role ID
+	 * @param id role database ID
+	 * @return actor ID
+	 */
 	public int getActorID ( int role ) {
 		
 	}
