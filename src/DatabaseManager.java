@@ -4,6 +4,7 @@
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -60,19 +61,19 @@ public class DatabaseManager {
 			statement.executeUpdate ( "DROP TABLE IF EXISTS movies" );
 
 			// Define the fields for the table "movies"
-			statement.executeUpdate ( "create table swimmer (id INTEGER PRIMARY KEY, title TEXT, year DATE)" );
+			statement.executeUpdate ( "create table movies (id INTEGER PRIMARY KEY, title TEXT, year DATE)" );
 
 			// If the table "actors" already exists in the data base
 			statement.executeUpdate ( "DROP TABLE IF EXISTS actors" );
 
 			// Define the fields for the table "actors"
-			statement.executeUpdate( "create table swimmer (id INTEGER PRIMARY KEY, first_name TEXT, last_name TEXT)" );
+			statement.executeUpdate( "create table actors (id INTEGER PRIMARY KEY, first_name TEXT, last_name TEXT)" );
 
 			// If the table "roles" already exists in the data base
 			statement.executeUpdate( "DROP TABLE IF EXISTS roles" );
 
 			// Define the fields for the table "roles"
-			statement.executeUpdate( "create table swimmer (id INTEGER PRIMARY KEY, movie INTEGER FOREIGN KEY, " +
+			statement.executeUpdate( "create table roles (id INTEGER PRIMARY KEY, movie INTEGER FOREIGN KEY, " +
 					"actor INTEGER FOREIGN KEY, role TEXT)" );
 
 		} catch ( SQLException e ) {
@@ -142,7 +143,17 @@ public class DatabaseManager {
 	 * @return unique movie database ID
 	 */
 	public int getMovieID ( String title ) {
-		
+		try {
+
+            ResultSet rs = statement.executeQuery("SELECT id FROM movies WHERE title = " + title);
+            return rs.getInt(1);
+
+		} catch ( SQLException e ) {
+			System.err.println ( e.getMessage ( ) );
+			System.exit ( 1 );
+			//never gets here; silly java
+			return -1;
+		}
 	}
 	
 	/**
@@ -151,7 +162,17 @@ public class DatabaseManager {
 	 * @return unique actor database ID
 	 */
 	public int getActorID ( String[] name ) {
-		
+		try {
+
+            ResultSet rs = statement.executeQuery("SELECT id FROM actors WHERE last_name = " + name[0] + " AND first_name =" + name[1]);
+            return rs.getInt(1);
+
+		} catch ( SQLException e ) {
+			System.err.println ( e.getMessage ( ) );
+			System.exit ( 1 );
+			//never gets here; silly java
+			return -1;
+		}
 	}	
 	
 	/**
@@ -160,7 +181,17 @@ public class DatabaseManager {
 	 * @return unique role database ID
 	 */
 	public int getRoleID ( String role ) {
-		
+		try {
+
+            ResultSet rs = statement.executeQuery("SELECT id FROM roles WHERE role = " + role);
+            return rs.getInt(1);
+
+		} catch ( SQLException e ) {
+			System.err.println ( e.getMessage ( ) );
+			System.exit ( 1 );
+			//never gets here; silly java
+			return -1;
+		}
 	}
 	
 	/**
@@ -169,7 +200,17 @@ public class DatabaseManager {
 	 * @return movie name string
 	 */
 	public String getMovieName ( int id ) {
-		
+		try {
+
+            ResultSet rs = statement.executeQuery("SELECT title FROM movies WHERE id = " + id);
+            return rs.getString(1);
+
+		} catch ( SQLException e ) {
+			System.err.println ( e.getMessage ( ) );
+			System.exit ( 1 );
+			//never gets here; silly java
+			return "NULL";
+		}
 	}
 	
 	/**
@@ -178,7 +219,17 @@ public class DatabaseManager {
 	 * @return actor name string array [last, first]
 	 */
 	public String[] getActorName ( int id ) {
-		
+		try {
+
+            ResultSet rs = statement.executeQuery("SELECT last_name, first_name FROM actors WHERE id = " + id);
+            return new String[]{rs.getString(1), rs.getString(2)};
+
+		} catch ( SQLException e ) {
+			System.err.println ( e.getMessage ( ) );
+			System.exit ( 1 );
+			//never gets here; silly java
+			return new String[]{"NULL","NULL"};
+		}
 	}
 	
 	/**
@@ -187,7 +238,17 @@ public class DatabaseManager {
 	 * @return role name string
 	 */
 	public String getRoleName ( int id ) {
-		
+		try {
+
+            ResultSet rs = statement.executeQuery("SELECT role FROM roles WHERE id = " + id);
+            return rs.getString(1);
+
+		} catch ( SQLException e ) {
+			System.err.println ( e.getMessage ( ) );
+			System.exit ( 1 );
+			//never gets here; silly java
+			return "NULL";
+		}
 	}
 	
 	/**
@@ -195,8 +256,18 @@ public class DatabaseManager {
 	 * @param id role database ID
 	 * @return movie ID
 	 */
-	public int getMovieID ( int role ) {
-		
+	public int getMovieID ( int id ) {
+		try {
+
+            ResultSet rs = statement.executeQuery("SELECT movie FROM roles WHERE id = " + id);
+            return rs.getInt(1);
+
+		} catch ( SQLException e ) {
+			System.err.println ( e.getMessage ( ) );
+			System.exit ( 1 );
+			//never gets here; silly java
+			return -1;
+		}
 	}
 	
 	/**
@@ -204,8 +275,56 @@ public class DatabaseManager {
 	 * @param id role database ID
 	 * @return actor ID
 	 */
-	public int getActorID ( int role ) {
-		
+	public int getActorID ( int id ) {
+		try {
+
+            ResultSet rs = statement.executeQuery("SELECT actor FROM roles WHERE id = " + id);
+            return rs.getInt(1);
+
+		} catch ( SQLException e ) {
+			System.err.println ( e.getMessage ( ) );
+			System.exit ( 1 );
+			//never gets here; silly java
+			return -1;
+		}
+	}
+	
+	/**
+	 * Get movie ID associated with given role title
+	 * @param role role title
+	 * @return movie ID
+	 */
+	public int getMovieIDByRole ( String role ) {
+		try {
+
+            ResultSet rs = statement.executeQuery("SELECT movie FROM roles WHERE role = " + role);
+            return rs.getInt(1);
+
+		} catch ( SQLException e ) {
+			System.err.println ( e.getMessage ( ) );
+			System.exit ( 1 );
+			//never gets here; silly java
+			return -1;
+		}
+	}
+	
+	/**
+	 * Get actor ID associated with given role title
+	 * @param role role title
+	 * @return actor ID
+	 */
+	public int getActorIDByRole ( String role ) {
+		try {
+
+            ResultSet rs = statement.executeQuery("SELECT actor FROM roles WHERE role = " + role);
+            return rs.getInt(1);
+
+		} catch ( SQLException e ) {
+			System.err.println ( e.getMessage ( ) );
+			System.exit ( 1 );
+			//never gets here; silly java
+			return -1;
+		}
 	}
 	
 	/**
