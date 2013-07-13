@@ -1,17 +1,18 @@
-/**
- * 
- */
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+
+/**
+ * 
+ */
 
 /**
  * DatabaseManager manages a connection to a SQLite database (here for the Bacon Map database)
  * @author wgf2104
- *
+ * 
  */
 public class DatabaseManager {
 
@@ -20,16 +21,16 @@ public class DatabaseManager {
 	private final String DB_CONNECTION_PREFIX = "jdbc:sqlite:";
 	private final String DB_FILENAME = "BaconMap.db";
 
-	
+
 	private Connection connection;
 	private Statement statement;
-	
+
 	/**
 	 * Loads SQLite JDBC; performs initial setup for db interaction.
 	 */
 	public DatabaseManager ( ) {
 
-		
+
 		try {
 
 			// load the sqlite-JDBC driver using the current class loader
@@ -80,6 +81,18 @@ public class DatabaseManager {
 			System.err.println ( e.getMessage ( ) );
 			System.exit ( 1 );
 		}
+	}
+
+	/**
+	 * Populates database and tables with IMDB Data from stored files
+	 */
+	public void populateDatabase ( ) {
+		//TODO: plaintext parsing
+
+
+
+
+
 	}
 
 	/**
@@ -136,17 +149,17 @@ public class DatabaseManager {
 			System.exit ( 1 );
 		}
 	}
-	
+
 	/**
-	 * Get movie table ID by movie title
+	 * Get movie table ID by movie title and year
 	 * @param title movie title
 	 * @return unique movie database ID
 	 */
-	public int getMovieID ( String title ) {
+	public int getMovieID ( String title, int year ) {
 		try {
 
-            ResultSet rs = statement.executeQuery("SELECT id FROM movies WHERE title = " + title);
-            return rs.getInt(1);
+			ResultSet rs = statement.executeQuery("SELECT id FROM movies WHERE title = " + title + " AND year =" + year);
+			return rs.getInt(1);
 
 		} catch ( SQLException e ) {
 			System.err.println ( e.getMessage ( ) );
@@ -155,7 +168,7 @@ public class DatabaseManager {
 			return -1;
 		}
 	}
-	
+
 	/**
 	 * Get actor table ID by actor name
 	 * @param name actor's name as string array [last, first]
@@ -164,8 +177,8 @@ public class DatabaseManager {
 	public int getActorID ( String[] name ) {
 		try {
 
-            ResultSet rs = statement.executeQuery("SELECT id FROM actors WHERE last_name = " + name[0] + " AND first_name =" + name[1]);
-            return rs.getInt(1);
+			ResultSet rs = statement.executeQuery("SELECT id FROM actors WHERE last_name = " + name[0] + " AND first_name =" + name[1]);
+			return rs.getInt(1);
 
 		} catch ( SQLException e ) {
 			System.err.println ( e.getMessage ( ) );
@@ -174,7 +187,7 @@ public class DatabaseManager {
 			return -1;
 		}
 	}	
-	
+
 	/**
 	 * Get role table ID by role name
 	 * @param role role title
@@ -183,8 +196,8 @@ public class DatabaseManager {
 	public int getRoleID ( String role ) {
 		try {
 
-            ResultSet rs = statement.executeQuery("SELECT id FROM roles WHERE role = " + role);
-            return rs.getInt(1);
+			ResultSet rs = statement.executeQuery("SELECT id FROM roles WHERE role = " + role);
+			return rs.getInt(1);
 
 		} catch ( SQLException e ) {
 			System.err.println ( e.getMessage ( ) );
@@ -193,7 +206,7 @@ public class DatabaseManager {
 			return -1;
 		}
 	}
-	
+
 	/**
 	 * Get movie name by movie table ID
 	 * @param id movie database ID
@@ -202,8 +215,8 @@ public class DatabaseManager {
 	public String getMovieName ( int id ) {
 		try {
 
-            ResultSet rs = statement.executeQuery("SELECT title FROM movies WHERE id = " + id);
-            return rs.getString(1);
+			ResultSet rs = statement.executeQuery("SELECT title FROM movies WHERE id = " + id);
+			return rs.getString(1);
 
 		} catch ( SQLException e ) {
 			System.err.println ( e.getMessage ( ) );
@@ -212,7 +225,7 @@ public class DatabaseManager {
 			return "NULL";
 		}
 	}
-	
+
 	/**
 	 * Get actor name by actor table ID
 	 * @param id actor database ID
@@ -221,8 +234,8 @@ public class DatabaseManager {
 	public String[] getActorName ( int id ) {
 		try {
 
-            ResultSet rs = statement.executeQuery("SELECT last_name, first_name FROM actors WHERE id = " + id);
-            return new String[]{rs.getString(1), rs.getString(2)};
+			ResultSet rs = statement.executeQuery("SELECT last_name, first_name FROM actors WHERE id = " + id);
+			return new String[]{rs.getString(1), rs.getString(2)};
 
 		} catch ( SQLException e ) {
 			System.err.println ( e.getMessage ( ) );
@@ -231,7 +244,7 @@ public class DatabaseManager {
 			return new String[]{"NULL","NULL"};
 		}
 	}
-	
+
 	/**
 	 * Get role name by role table ID
 	 * @param id role database ID
@@ -240,8 +253,8 @@ public class DatabaseManager {
 	public String getRoleName ( int id ) {
 		try {
 
-            ResultSet rs = statement.executeQuery("SELECT role FROM roles WHERE id = " + id);
-            return rs.getString(1);
+			ResultSet rs = statement.executeQuery("SELECT role FROM roles WHERE id = " + id);
+			return rs.getString(1);
 
 		} catch ( SQLException e ) {
 			System.err.println ( e.getMessage ( ) );
@@ -250,7 +263,7 @@ public class DatabaseManager {
 			return "NULL";
 		}
 	}
-	
+
 	/**
 	 * Get movie ID associated with given role ID
 	 * @param id role database ID
@@ -259,8 +272,8 @@ public class DatabaseManager {
 	public int getMovieID ( int id ) {
 		try {
 
-            ResultSet rs = statement.executeQuery("SELECT movie FROM roles WHERE id = " + id);
-            return rs.getInt(1);
+			ResultSet rs = statement.executeQuery("SELECT movie FROM roles WHERE id = " + id);
+			return rs.getInt(1);
 
 		} catch ( SQLException e ) {
 			System.err.println ( e.getMessage ( ) );
@@ -269,7 +282,7 @@ public class DatabaseManager {
 			return -1;
 		}
 	}
-	
+
 	/**
 	 * Get actor ID associated with given role ID
 	 * @param id role database ID
@@ -278,8 +291,8 @@ public class DatabaseManager {
 	public int getActorID ( int id ) {
 		try {
 
-            ResultSet rs = statement.executeQuery("SELECT actor FROM roles WHERE id = " + id);
-            return rs.getInt(1);
+			ResultSet rs = statement.executeQuery("SELECT actor FROM roles WHERE id = " + id);
+			return rs.getInt(1);
 
 		} catch ( SQLException e ) {
 			System.err.println ( e.getMessage ( ) );
@@ -288,7 +301,7 @@ public class DatabaseManager {
 			return -1;
 		}
 	}
-	
+
 	/**
 	 * Get movie ID associated with given role title
 	 * @param role role title
@@ -297,8 +310,8 @@ public class DatabaseManager {
 	public int getMovieIDByRole ( String role ) {
 		try {
 
-            ResultSet rs = statement.executeQuery("SELECT movie FROM roles WHERE role = " + role);
-            return rs.getInt(1);
+			ResultSet rs = statement.executeQuery("SELECT movie FROM roles WHERE role = " + role);
+			return rs.getInt(1);
 
 		} catch ( SQLException e ) {
 			System.err.println ( e.getMessage ( ) );
@@ -307,7 +320,7 @@ public class DatabaseManager {
 			return -1;
 		}
 	}
-	
+
 	/**
 	 * Get actor ID associated with given role title
 	 * @param role role title
@@ -316,8 +329,8 @@ public class DatabaseManager {
 	public int getActorIDByRole ( String role ) {
 		try {
 
-            ResultSet rs = statement.executeQuery("SELECT actor FROM roles WHERE role = " + role);
-            return rs.getInt(1);
+			ResultSet rs = statement.executeQuery("SELECT actor FROM roles WHERE role = " + role);
+			return rs.getInt(1);
 
 		} catch ( SQLException e ) {
 			System.err.println ( e.getMessage ( ) );
@@ -326,7 +339,7 @@ public class DatabaseManager {
 			return -1;
 		}
 	}
-	
+
 	/**
 	 * Close the database after initialization
 	 */
@@ -344,6 +357,35 @@ public class DatabaseManager {
 			System.err.println ( e );
 			System.exit ( 1 );
 		}
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public ArrayList<String[]> getActorNames ( ) {
+		//result set
+		ArrayList<String[]> actors = new ArrayList<String[]>();
+		
+		try {
+
+			//get the actors
+			ResultSet rs = statement.executeQuery("SELECT last_name, first_name FROM actors");
+			while(rs.next())
+				actors.add(new String[]{rs.getString(1), rs.getString(2)});
+			
+		} catch ( SQLException e ) {
+			// connection close failed.
+			System.err.println ( e );
+			System.exit ( 1 );
+		}
+		
+		return actors;
+	}
+	
+	public ArrayList<String> getMoviesByActor ( String[] actor ) {
+		
+		
 	}
 
 
