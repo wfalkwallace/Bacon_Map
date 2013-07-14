@@ -384,6 +384,8 @@ public class DatabaseManager {
 	}
 	
 	public ArrayList<String> getMoviesByActor ( String[] actor ) {
+		//result set
+		ArrayList<String> movies = new ArrayList<String>();
 		
 		
 	}
