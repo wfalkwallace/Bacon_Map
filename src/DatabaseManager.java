@@ -234,7 +234,8 @@ public class DatabaseManager {
 	public String[] getActorName ( int id ) {
 		try {
 
-			ResultSet rs = statement.executeQuery("SELECT last_name, first_name FROM actors WHERE id = " + id);
+			ResultSet rs = statement.executeQuery("SELECT last_name, first_name FROM actors " +
+					"WHERE id = " + id);
 			return new String[]{rs.getString(1), rs.getString(2)};
 
 		} catch ( SQLException e ) {
@@ -288,7 +289,7 @@ public class DatabaseManager {
 	 * @param id role database ID
 	 * @return actor ID
 	 */
-	public int getActorID ( int id ) {
+	public int getActorIDByRole ( int id ) {
 		try {
 
 			ResultSet rs = statement.executeQuery("SELECT actor FROM roles WHERE id = " + id);
@@ -366,28 +367,61 @@ public class DatabaseManager {
 	public ArrayList<String[]> getActorNames ( ) {
 		//result set
 		ArrayList<String[]> actors = new ArrayList<String[]>();
-		
+
 		try {
 
 			//get the actors
 			ResultSet rs = statement.executeQuery("SELECT last_name, first_name FROM actors");
 			while(rs.next())
 				actors.add(new String[]{rs.getString(1), rs.getString(2)});
-			
+
 		} catch ( SQLException e ) {
 			// connection close failed.
 			System.err.println ( e );
 			System.exit ( 1 );
 		}
-		
+
 		return actors;
 	}
-	
+
 	public ArrayList<String> getMoviesByActor ( String[] actor ) {
 		//result set
 		ArrayList<String> movies = new ArrayList<String>();
-		
-		
+
+		try {
+
+			ResultSet rs = statement.executeQuery("SELECT title FROM movies " +
+					"WHERE last_name = " + actor[0] + " AND first_name = " + actor[1]);
+			while(rs.next())
+				movies.add(rs.getString(1));
+
+		} catch ( SQLException e ) {
+			// connection close failed.
+			System.err.println ( e );
+			System.exit ( 1 );
+		}
+
+		return movies;
+	}
+
+	public ArrayList<String[]> getActorsByMovie ( String movie, int year ) {
+		//result set
+		ArrayList<String[]> actors = new ArrayList<String[]>();
+
+		try {
+
+			int movieID = getMovieID(movie, year);
+			ResultSet rs = statement.executeQuery("SELECT actor FROM roles WHERE movie = " + movieID);
+			while(rs.next())
+				actors.add(getActorName(rs.getInt(1)));
+
+		} catch ( SQLException e ) {
+			// connection close failed.
+			System.err.println ( e );
+			System.exit ( 1 );
+		}
+
+		return actors;
 	}
 
 
